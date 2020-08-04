@@ -20,6 +20,7 @@ public class CustomerController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<Customer> getAccounts() {
         System.out.println("git test");
+        System.out.println("dev test");
         return customerDao.findAll();
     }
 
