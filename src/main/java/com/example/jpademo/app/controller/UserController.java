@@ -62,7 +62,18 @@ public class UserController {
 //        Pageable pageable1 = PageRequest.of(0, 10, Sort.by(orders));
 
         Page<User> jack = userPagingAndSortingRepository.findByName("jack", pageable);
-       
+        Page<User> startingWith = userPagingAndSortingRepository.findByNameStartingWith("ja", pageable);
+        System.out.println(startingWith);
         return jack;
     }
+
+
+    @GetMapping("/getuser")
+    public List<User> getUser(){
+        List<User> jack = userRepository.findUserByEmailAndIdAndName("122", 1L, "jack");
+        List<User> jack1 = userRepository.findUserByEmailIsStartingWithAndNameStartingWith("11", "jack");
+        System.out.println(jack1);
+        return jack1;
+    }
+
 }
