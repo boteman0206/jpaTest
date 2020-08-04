@@ -1,0 +1,20 @@
+
+
+jpa:
+    hibernate:
+        ddl-auto: create  # 第一次简表create  后面用update
+        show-sql: true
+
+
+
+#    复制代码
+logging:
+    level:
+        root: info
+        org:
+            hibernate:
+                SQL: debug   #debug时显示sql
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: trace  #trace时，显示参数

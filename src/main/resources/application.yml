@@ -5,6 +5,10 @@ spring:
         url: jdbc:mysql://localhost:3306/jpatest?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
         username: root
         password: 1234
+    application:
+        name: mp-jpa
+    profiles:
+        active: dev
 
 jpa:
     hibernate:
@@ -21,3 +25,4 @@ server:
     port: 8089
     servlet:
         context-path: /
+
