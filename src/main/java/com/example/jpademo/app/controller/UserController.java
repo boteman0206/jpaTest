@@ -7,7 +7,9 @@ import com.example.jpademo.app.dao.UserRepository;
 import com.example.jpademo.app.entity.DTO.NamesOnly;
 import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
+import com.example.jpademo.app.entity.QUser;
 import com.example.jpademo.app.entity.User;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 
 import javax.persistence.criteria.*;
@@ -318,6 +321,29 @@ public class UserController {
 //
 //        System.out.println("all = " + all);
 //        return all;
+    }
+
+
+    @GetMapping("querydsl")
+    public Page<User> getquerydsl(){
+//        querydsl 测试使用
+
+        QUser user = QUser.user;
+
+        // todo 这个和上面的Predicate有冲突  需要注意
+
+        // 构建查询条件
+        com.querydsl.core.types.Predicate jackor = user.name.startsWith("jack").or(user.email.contains("1"));
+        com.querydsl.core.types.Predicate jackand = user.name.startsWith("jack").and(user.email.contains("1"));
+
+        //分页排序
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC,"id"));
+        PageRequest pageRequest = PageRequest.of(0,10,sort);
+        //查找结果
+        Page<User> tCityPage = userJpaRepository.findAll((com.querydsl.core.types.Predicate) jackor, pageRequest);
+
+        return tCityPage;
+
     }
 
 }
