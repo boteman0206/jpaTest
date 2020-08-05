@@ -4,6 +4,7 @@ import com.example.jpademo.app.entity.DTO.NamesOnly;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public interface UserJpaRepository<T> extends JpaRepository<User, Integer> {
+public interface UserJpaRepository<T> extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
     List<NamesOnly> findByName(String name);
 

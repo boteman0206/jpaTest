@@ -4,30 +4,22 @@ package com.example.jpademo.app.controller;
 import com.example.jpademo.app.dao.UserJpaRepository;
 import com.example.jpademo.app.dao.UserPagingAndSortingRepository;
 import com.example.jpademo.app.dao.UserRepository;
-import com.example.jpademo.app.entity.Customer;
 import com.example.jpademo.app.entity.DTO.NamesOnly;
 import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.User;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.boot.jaxb.SourceType;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.data.querydsl.QPageRequest;
-import org.springframework.data.repository.query.QueryByExampleExecutor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import java.util.Collection;
+import javax.persistence.criteria.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 @RestController
@@ -40,8 +32,6 @@ public class UserController {
 
     @Autowired
     UserPagingAndSortingRepository userPagingAndSortingRepository;
-
-
 
     @Autowired
     UserJpaRepository userJpaRepository;
@@ -182,7 +172,15 @@ public class UserController {
     @GetMapping("/getQuery")
     public void getQuery(){
 
-        // TODO: 20-8-5 可以动态的执行拼接查询条件
+        // TODO: 20-8-5 可以动态的执行拼接查询条件 注意点
+        /**
+         * 1： 因为是基本类型，需要忽略掉。因为基本数据类型会被加在where条件中进行过滤
+         * 2： 查询 Null 值   //改变“Null值处理方式”：包括。 .withIncludeNullValues()
+         * 3：  //忽略其他属性
+         *      .withIgnorePaths("id", "name", "sex", "age", "focus", "addTime", "remark", "customerType");
+         *
+         */
+
 
         //创建查询条件数据对象
         User user = new User();
@@ -203,6 +201,33 @@ public class UserController {
             System.out.println("====" + o);
         }
 
+
+
+
+    }
+
+
+
+    @GetMapping("activate")
+    public Page<User> getActivate(){
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+        int page = 0;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(page,pageSize,sort);
+
+        //通常使用 Specification 的匿名内部类
+        Specification<User> specification = new Specification<User>() {
+
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path id = root.get("id");
+                Predicate predicateId = criteriaBuilder.ge(id,1);
+                return predicateId ;
+            }
+        };
+
+        Page<User> userPage = userJpaRepository.findAll(specification,  pageable);
+        return userPage;
     }
 
 }
