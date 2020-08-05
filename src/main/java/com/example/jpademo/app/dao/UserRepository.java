@@ -3,9 +3,13 @@ package com.example.jpademo.app.dao;
 import com.example.jpademo.app.entity.User;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
+import java.util.stream.Stream;
 
 
 //public interface UserRepository extends JpaRepository<User, Integer> {
@@ -27,5 +31,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     List<User> findFirstByNameOrderByIdDesc(String name);
 
 
-
+//    stream返回类型
+    Stream<User> findAllByName(String name);
 }

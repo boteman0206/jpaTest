@@ -12,13 +12,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -83,7 +86,33 @@ public class UserController {
 
         List<User> jack3 = userRepository.findFirstByNameOrderByIdDesc("jack");
         System.out.println("jack3 = " + jack3);
+
+
         return jack2;
+    }
+
+
+    @GetMapping("/stream")
+    @Transactional(readOnly = true)
+    public List<User> getStream(){
+
+
+        // stream 测试  需要加上@Transactional(readOnly = true)注解 否则报错
+
+
+        Stream<User> stream = null;
+        try {
+            stream = userRepository.findAllByName("jack");
+            stream.forEach(System.out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stream!=null){
+                stream.close();  // 流的关闭
+            }
+        }
+
+        return null;
     }
 
 }
