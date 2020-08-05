@@ -9,4 +9,8 @@ public interface UserPagingAndSortingRepository extends PagingAndSortingReposito
 
     Page<User> findByName(String name, Pageable pageable);
     Page<User> findByNameStartingWith(String name, Pageable pageable);
+
+
+
+
 }

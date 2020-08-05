@@ -73,7 +73,17 @@ public class UserController {
         List<User> jack = userRepository.findUserByEmailAndIdAndName("122", 1L, "jack");
         List<User> jack1 = userRepository.findUserByEmailIsStartingWithAndNameStartingWith("11", "jack");
         System.out.println(jack1);
-        return jack1;
+
+        List<User> jack2 = userRepository.findFirst2ByName("jack");
+
+        log.info("jack2 = " + jack2.toString());
+
+        List<User> isNotNull = userRepository.findByNameIsNotNull();
+        log.info("isNotNull = " + isNotNull);
+
+        List<User> jack3 = userRepository.findFirstByNameOrderByIdDesc("jack");
+        System.out.println("jack3 = " + jack3);
+        return jack2;
     }
 
 }
