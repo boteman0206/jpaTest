@@ -98,6 +98,8 @@ public class UserController {
 
 
         // stream 测试  需要加上@Transactional(readOnly = true)注解 否则报错
+        Stream<User> allByCustomQueryAndStream = userRepository.findAllByCustomQueryAndStream();
+        allByCustomQueryAndStream.forEach(System.out::println);
 
 
         Stream<User> stream = null;

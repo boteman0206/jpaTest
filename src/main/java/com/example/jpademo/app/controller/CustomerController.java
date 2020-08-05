@@ -4,6 +4,7 @@ package com.example.jpademo.app.controller;
 import com.example.jpademo.app.dao.CustomerDao;
 import com.example.jpademo.app.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,13 @@ public class CustomerController {
         System.out.println("git test");
         System.out.println("dev test");
         return customerDao.findAll();
+    }
+
+
+    @GetMapping("async")
+    public void getAsync(){
+        List<Customer> all = customerDao.findAll();
+        System.out.println(all);
     }
 
 }
