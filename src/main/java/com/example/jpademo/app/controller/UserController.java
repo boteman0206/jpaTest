@@ -9,6 +9,7 @@ import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -207,6 +209,10 @@ public class UserController {
     }
 
 
+    /**
+     * 简单的动态参数查询
+     * @return
+     */
 
     @GetMapping("activate")
     public Page<User> getActivate(){
@@ -228,6 +234,90 @@ public class UserController {
 
         Page<User> userPage = userJpaRepository.findAll(specification,  pageable);
         return userPage;
+    }
+
+
+
+    /**
+     * 复杂的条件动态拼接查询
+     */
+    @GetMapping("difficulty")
+    public Page getDifficulty(){
+        String name = "jack";
+        String email = "1";
+        Long id = 1L;
+
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"id");
+        int page = 0;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(page,pageSize,sort);
+
+
+        // 待分页的查询
+        Page all = userJpaRepository.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<Predicate>();
+            if (StringUtils.isNotBlank(name)) {
+                //liked的查询条件
+                predicates.add(cb.like(root.get("name"), "%" + name + "%"));
+            }
+            if (StringUtils.isNotBlank(email)) {
+                //equal查询条件
+//                predicates.add(cb.like(root.get("email"), "%" + email + "%"));
+                // 负责的or关联条件
+                predicates.add(cb.or(cb.like(root.get("email"), "%" + email + "%"), cb.like(root.get("name"), "%"+name+ "%")));
+            }
+            if (id != null) {
+                //greaterThan大于等于查询条件
+                predicates.add(cb.greaterThanOrEqualTo(root.get("id"), id));
+            }
+//            if (userParam.getBeginCreateTime()!=null&&userParam.getEndCreateTime()!=null){
+//                根据时间区间去查询   predicates.add(cb.between(root.get("createTime"),userParam.getBeginCreateTime(),userParam.getEndCreateTime()));
+//            }
+//            if (StringUtils.isNotBlank(userParam.getAddressCity())) {
+//                //联表查询，利用root的join方法，根据关联关系表里面的字段进行查询。
+//                predicates.add(cb.equal(root.join("addressEntityList").get("addressCity"), userParam.getAddressCity()));
+//            }
+            return query.where(predicates.toArray(new Predicate[predicates.size()])).getRestriction();
+        }, pageable);
+
+        return all;
+
+
+
+//        方式二 不带分页
+//        List all = userJpaRepository.findAll((Specification<User>) (itemRoot, query, criteriaBuilder) -> {
+//            //这里用 List 存放多种查询条件，实现动态查询
+//            List<Predicate> predicatesList = new ArrayList<>();
+//            //name 模糊查询，like 语句
+//            if (name != null) {
+//                predicatesList.add(
+//                        criteriaBuilder.and(
+//                                criteriaBuilder.like(
+//                                        itemRoot.get("name"), "%" + name + "%")));
+//            }
+//            // itemPrice like 语句
+//            if (email != null) {
+//                predicatesList.add(
+//                        criteriaBuilder.and(
+//                                criteriaBuilder.like(
+//                                        itemRoot.get("email"), "%" + email + "%")));
+//            }
+////            //itemStock 大于等于 >= 语句
+//            if (id != null) {
+//                predicatesList.add(
+//                        criteriaBuilder.and(
+//                                criteriaBuilder.ge(
+//                                        itemRoot.get("id"), id)));
+//            }
+//            //where() 拼接查询条件
+//            query.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+//            //返回通过 CriteriaQuery 拼装的 Predicate
+//            return query.getRestriction();
+//        });
+//
+//        System.out.println("all = " + all);
+//        return all;
     }
 
 }
