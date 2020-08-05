@@ -29,6 +29,16 @@ public interface UserJpaRepository<T> extends JpaRepository<User, Integer> {
 
 
 
+//    指定原生的sql进行查询
+//    注意点：nativeQuery 不支持直接 Sort 的参数查询。
+    @Query(value = "SELECT * FROM user order by id desc ", nativeQuery = true)
+    List<User> findByEmailAddress();
+
+    // 通过参数进行排序写法二
+    @Query(value = "select * from user where name=?1 order by ?2 desc",nativeQuery = true)
+    List<User> findByFirstName(String firstName,String sort);
+
+
 
 
 }

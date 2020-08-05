@@ -163,5 +163,14 @@ public class UserController {
     }
 
 
+    @GetMapping("/sql")
+    public void getOriginSql(){
+        List<User> byEmailAddress = userJpaRepository.findByEmailAddress();
+        System.out.println(byEmailAddress);
+
+        // 测试补气作用，不知道为什么
+        List<User> byFirstName = userJpaRepository.findByFirstName("jack", "id");
+        System.out.println(byFirstName);
+    }
 
 }
