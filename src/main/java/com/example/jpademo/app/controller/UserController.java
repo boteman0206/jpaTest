@@ -151,11 +151,12 @@ public class UserController {
 //        另外的方式
 
         //我想包含全字段，就直接用原始entity（Person.class）接收即可
-        Collection<?> jack1 = userJpaRepository.findByName("jack", User.class);
+        List<User> jack1 = userJpaRepository.findByName("jack", User.class);
         System.out.println("所有的user = " + jack1);
         //如果我想仅仅返回名称，我只需要指定Dto即可。
-        Collection<?> matthews = userJpaRepository.findByName("jack", NamesOnlyDto.class);
-        System.out.println("matters = " + matthews);
+        List<NamesOnlyDto> jack2 = userJpaRepository.findByName("jack", NamesOnlyDto.class);
+        System.out.println("matters = " + jack2);
+
 
 
         return jack;

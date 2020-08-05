@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 
-public interface UserJpaRepository extends JpaRepository<User, Integer> {
+public interface UserJpaRepository<T> extends JpaRepository<User, Integer> {
 
     List<NamesOnly> findByName(String name);
-    Collection<?> findByName(String lastname, Class<?> type);
+
+    // 定义一个泛型接口
+    List<T> findByName(String lastname, Class<T> type);
 
 
 
