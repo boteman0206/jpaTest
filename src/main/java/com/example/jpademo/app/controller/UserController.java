@@ -330,7 +330,7 @@ public class UserController {
 
         QUser user = QUser.user;
 
-        // todo 这个和上面的Predicate有冲突  需要注意
+        // todo 这个和上面的Predicate有冲突  需要注意 需要继承 QuerydslPredicateExecutor才可以使用
 
         // 构建查询条件
         com.querydsl.core.types.Predicate jackor = user.name.startsWith("jack").or(user.email.contains("1"));
