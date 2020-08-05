@@ -10,4 +10,11 @@ public class JpademoApplication {
         SpringApplication.run(JpademoApplication.class, args);
     }
 
+
+    //让Spring管理JPAQueryFactory 全局导入
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager){
+        return new JPAQueryFactory(entityManager);
+    }
+
 }

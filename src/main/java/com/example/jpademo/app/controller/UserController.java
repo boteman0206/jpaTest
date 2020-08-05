@@ -41,6 +41,18 @@ public class UserController {
     @Autowired
     UserJpaRepository userJpaRepository;
 
+    // 导入JPAQueryFactory
+//    @Autowired
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    private JPAQueryFactory queryFactory;
+//
+//    @PostConstruct
+//    public void init() {
+//        queryFactory = new JPAQueryFactory(entityManager);
+//    }
+
 
     @GetMapping("/list")
     public Iterable<User> list(){
@@ -343,6 +355,11 @@ public class UserController {
         Page<User> tCityPage = userJpaRepository.findAll((com.querydsl.core.types.Predicate) jackor, pageRequest);
 
         return tCityPage;
+
+    }
+
+    @GetMapping("/JPAQuery")
+    public Page<User> getJPAQuery(){
 
     }
 
