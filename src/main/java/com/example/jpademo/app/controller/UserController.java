@@ -5,6 +5,7 @@ import com.example.jpademo.app.dao.UserJpaRepository;
 import com.example.jpademo.app.dao.UserPagingAndSortingRepository;
 import com.example.jpademo.app.dao.UserRepository;
 import com.example.jpademo.app.entity.DTO.NamesOnly;
+import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.User;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -143,6 +145,18 @@ public class UserController {
         for (UserNameAndId getalluser : getallusers) {
             System.out.println(getalluser.getId() + "===" + getalluser.getName());
         }
+
+
+
+//        另外的方式
+
+        //我想包含全字段，就直接用原始entity（Person.class）接收即可
+        Collection<?> jack1 = userJpaRepository.findByName("jack", User.class);
+        System.out.println("所有的user = " + jack1);
+        //如果我想仅仅返回名称，我只需要指定Dto即可。
+        Collection<?> matthews = userJpaRepository.findByName("jack", NamesOnlyDto.class);
+        System.out.println("matters = " + matthews);
+
 
         return jack;
     }

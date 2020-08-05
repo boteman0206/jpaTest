@@ -14,6 +14,8 @@ import java.util.Map;
 public interface UserJpaRepository extends JpaRepository<User, Integer> {
 
     List<NamesOnly> findByName(String name);
+    Collection<?> findByName(String lastname, Class<?> type);
+
 
 
     @Query("select s.name from User s where s.id=?1")
@@ -22,5 +24,9 @@ public interface UserJpaRepository extends JpaRepository<User, Integer> {
 
     @Query("select s.id as id, s.name as name from User s ")
     List<UserNameAndId> getallusers();
+
+
+
+
 
 }
