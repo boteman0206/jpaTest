@@ -1,11 +1,16 @@
 package com.example.jpademo.app.controller;
 
 
+import com.example.jpademo.app.dao.UserJpaRepository;
 import com.example.jpademo.app.dao.UserPagingAndSortingRepository;
 import com.example.jpademo.app.dao.UserRepository;
+import com.example.jpademo.app.entity.DTO.NamesOnly;
+import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.User;
-import jdk.nashorn.internal.runtime.logging.Logger;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.jaxb.SourceType;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.jws.soap.SOAPBinding;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @RestController
@@ -33,6 +39,13 @@ public class UserController {
 
     @Autowired
     UserPagingAndSortingRepository userPagingAndSortingRepository;
+
+
+
+    @Autowired
+    UserJpaRepository userJpaRepository;
+
+
     @GetMapping("/list")
     public Iterable<User> list(){
 
@@ -116,5 +129,24 @@ public class UserController {
 
         return null;
     }
+
+
+    // 自定意返回的字段
+    @GetMapping("/define")
+    public List<NamesOnly>  getDefine() {
+        List<NamesOnly> jack = userJpaRepository.findByName("jack");
+
+        String idandName = userJpaRepository.getIdandName(1L);
+        System.out.println(idandName);
+
+        List<UserNameAndId> getallusers = userJpaRepository.getallusers();
+        for (UserNameAndId getalluser : getallusers) {
+            System.out.println(getalluser.getId() + "===" + getalluser.getName());
+        }
+
+        return jack;
+    }
+
+
 
 }
