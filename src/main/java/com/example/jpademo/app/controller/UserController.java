@@ -4,6 +4,7 @@ package com.example.jpademo.app.controller;
 import com.example.jpademo.app.dao.UserJpaRepository;
 import com.example.jpademo.app.dao.UserPagingAndSortingRepository;
 import com.example.jpademo.app.dao.UserRepository;
+import com.example.jpademo.app.entity.Customer;
 import com.example.jpademo.app.entity.DTO.NamesOnly;
 import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
@@ -13,11 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.jaxb.SourceType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -175,6 +174,35 @@ public class UserController {
 
         List byLastnameOrFirstname = userJpaRepository.findByLastnameOrFirstname("jack", "jack");
         System.out.println(byLastnameOrFirstname);
+    }
+
+
+
+
+    @GetMapping("/getQuery")
+    public void getQuery(){
+
+        // TODO: 20-8-5 可以动态的执行拼接查询条件
+
+        //创建查询条件数据对象
+        User user = new User();
+        user.setName("Ja");
+        user.setEmail("1");
+
+        //创建匹配器，即如何使用查询条件
+        ExampleMatcher matcher = ExampleMatcher.matching() //构建对象
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith()) //姓名采用“开始匹配”的方式查询
+                .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withIgnorePaths("id");  //忽略属性：是否关注。因为是基本类型，需要忽略掉
+
+        //创建实例
+        Example<User> ex = Example.of(user, matcher);
+        List all = userJpaRepository.findAll(ex);
+
+        for (Object o : all) {
+            System.out.println("====" + o);
+        }
+
     }
 
 }
