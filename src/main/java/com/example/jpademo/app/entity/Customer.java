@@ -52,3 +52,38 @@ public class Customer  implements Serializable {
     private List<LinkMan> linkMan;
     // 省略 getter 和 setter 方法
 }
+
+/**
+ *
+ * 一： @OneToOne 一对一关联关系
+ *
+ * 用法 @OneToOne 需要配合 @JoinColumn 一起使用。注意：可以双向关联，也可以只配置一方，看实际需求
+ *
+ *案例：假设一个部门只有一个员工，Department 的内容如下：
+ * @OneToOne
+ * @JoinColumn(name="employee_id",referencedColumnName="id")
+ * private Employee employeeAttribute = new Employee();
+ *注意：employee_id指的是 Department 里面的字段，而 referencedColumnName="id" 指的是 Employee 表里面的字段。
+ *
+ *如果需要双向关联，Employee 的内容如下：
+ *
+ * @OneToOne(mappedBy="employeeAttribute")
+ * private Department department;
+ *
+ * 当然了也可以不选用 mappedBy 和下面效果是一样的：
+ * @OneToOne
+ * @JoinColumn(name="id",referencedColumnName="employee_id")
+ * private Department department;
+ *
+ *
+ *
+ * 二： @OneToMany 一对多 & @ManyToOne 多对一
+ * @ManyToOne 与 OneToMany 的源码稍有区别仔细体会。
+ *
+ * （2）使用案例，也是必须要和 @JoinColumn 配合使用才有效。
+ *
+ *
+ *
+ *
+ *
+ */
