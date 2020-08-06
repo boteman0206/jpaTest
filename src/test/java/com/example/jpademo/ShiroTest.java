@@ -1,6 +1,7 @@
 package com.example.jpademo;
 
 
+import com.example.jpademo.app.shiroTest.Login;
 import junit.framework.Assert;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 @SpringBootTest
 public class ShiroTest {
@@ -71,7 +73,7 @@ public class ShiroTest {
         //3、得到Subject及创建用户名/密码身份验证Token（即用户身份/凭证）
         Subject subject = SecurityUtils.getSubject();
         System.out.println("subject : " +subject);
-        UsernamePasswordToken token = new UsernamePasswordToken("zhang1", "123"); // 正确的名称进行登陆
+        UsernamePasswordToken token = new UsernamePasswordToken("zhang", "123"); // 正确的名称进行登陆
 
         try {
             //4、登录，即身份验证
@@ -88,5 +90,23 @@ public class ShiroTest {
         subject.logout();
     }
 
+
+
+    @Test
+    public void testHasRole() {
+        Login login = new Login();
+        Subject subject = login.login("classpath:shiro-role.ini", "zhang", "123");
+
+        //判断拥有角色：role1
+        Assert.assertTrue(subject.hasRole("role1"));
+        System.out.println(subject.hasRole("role1"));
+        //判断拥有角色：role1 and role2
+        Assert.assertTrue(subject.hasAllRoles(Arrays.asList("role1", "role2")));
+        //判断拥有角色：role1 and role2 and !role3
+        boolean[] result = subject.hasRoles(Arrays.asList("role1", "role2", "role3"));
+        for (boolean b : result) {
+            System.out.println(b);
+        }
+    }
 
 }
