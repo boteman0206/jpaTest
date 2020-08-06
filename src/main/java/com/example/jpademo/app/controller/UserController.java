@@ -9,7 +9,10 @@ import com.example.jpademo.app.entity.DTO.NamesOnlyDto;
 import com.example.jpademo.app.entity.DTO.UserNameAndId;
 import com.example.jpademo.app.entity.QUser;
 import com.example.jpademo.app.entity.User;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +46,23 @@ public class UserController {
     @Autowired
     UserJpaRepository userJpaRepository;
 
-    // 导入JPAQueryFactory
+    // 方式一注入有启动类的spring boot application注入
 //    @Autowired
-//    @PersistenceContext
-//    private EntityManager entityManager;
-//
 //    private JPAQueryFactory queryFactory;
+
+    // 方式二： 在类中使用init方法注入加上@PostConstruct注解
+    @Autowired
+    @PersistenceContext
+    private EntityManager entityManager;
+
 //
-//    @PostConstruct
-//    public void init() {
-//        queryFactory = new JPAQueryFactory(entityManager);
-//    }
+    private JPAQueryFactory queryFactory;
+
+    @PostConstruct
+    public void init() {
+        queryFactory = new JPAQueryFactory(entityManager);
+        System.out.println("init方法注入：" + queryFactory);
+    }
 
 
     @GetMapping("/list")
@@ -360,7 +371,26 @@ public class UserController {
 
     @GetMapping("/JPAQuery")
     public Page<User> getJPAQuery(){
+        System.out.println("test JPAQuery" + queryFactory);
+        QUser user = QUser.user;
 
+        JPAQuery<User> ja = queryFactory.select(user).from(user).where(user.name.contains("ja"));
+        List<User> fetch = ja.fetch();
+        System.out.println("fetch : " + fetch);
+        JPAQuery<User> userJPAQuery = ja.fetchAll();
+        System.out.println("fetchAll : " + userJPAQuery);
+        User user1 = ja.fetchFirst();
+
+        System.out.println("fetchFirst : " + user1);
+
+        long l = ja.fetchCount();
+        System.out.println("fetchCount: " + l);
+        QueryResults<User> userQueryResults = ja.fetchResults();
+        System.out.println("fetchResults : " + userQueryResults);
+        User user2 = ja.fetchOne();
+        System.out.println("fetchone : " + user2);
+
+        return null;
     }
 
 }
