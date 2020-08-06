@@ -91,7 +91,9 @@ public class ShiroTest {
     }
 
 
-
+    /**
+     * 角色的配置文件测试
+     */
     @Test
     public void testHasRole() {
         Login login = new Login();
@@ -108,5 +110,38 @@ public class ShiroTest {
             System.out.println(b);
         }
     }
+
+
+    /**
+     * 角色接口的配置
+     * Shiro提供了isPermitted和isPermittedAll用于判断用户是否拥有某个权限或所有权限，
+     *  没有提供如isPermittedAny用于判断拥有某一个权限的接口。
+     *
+     *  subject.checkPermission("user:create");
+     *  权限如果没有会报错
+     */
+    @Test
+    public void testIsPermitted() {
+        Login login = new Login();
+
+        login.login("classpath:shiro-permission.ini", "zhang", "123");
+
+        Subject subject = SecurityUtils.getSubject();
+
+        //判断拥有权限：user:create
+        Assert.assertTrue(subject.isPermitted("user:create"));
+        System.out.println("user::create " + subject.isPermitted("user:create"));
+        //判断拥有权限：user:update and user:delete
+        Assert.assertTrue(subject.isPermittedAll("user:update", "user:delete"));
+        System.out.println("user:update:delete " + subject.isPermittedAll("user:update", "user:delete"));
+        //判断没有权限：user:view
+        Assert.assertFalse(subject.isPermitted("user:view"));
+        System.out.println("user:view " + subject.isPermitted("user:view"));
+    }
+
+
+
+
+
 
 }
