@@ -1,5 +1,6 @@
 
 #    https://gitchat.csdn.net/columnTopic/5ab9c44cc864031e9f83034a  JPA 参考文档
+#    https://www.iteye.com/blog/jinnianshilongnian-2019547   shiro参考文档
 spring:
     datasource:
         driver-class-name: com.mysql.jdbc.Driver
